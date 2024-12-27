@@ -20,21 +20,15 @@ export default function sequence(element, pristine = this.pristine) {
 		seq.models = { visible, revealed }
 
 		/**
-		 * If the sequence has no revealed members,
-		 * then we reveal the first visible element
-		 * within that sequence.
-		 *
-		 * The sequence then cues a recursive call
-		 * in both directions.
+		 * Ensure the sequence always starts with the first element in DOM order.
 		 */
 		if (!revealed.body.length) {
-			const nextId = seq.members[visible.body[0]]
-			const nextElement = this.store.elements[nextId]
+			const firstId = seq.members[0] // Always start with the first element in the DOM
+			const firstElement = this.store.elements[firstId]
 
-			if (nextElement) {
-				cue.call(this, seq, visible.body[0], -1, pristine)
-				cue.call(this, seq, visible.body[0], +1, pristine)
-				return animate.call(this, nextElement, { reveal: true, pristine })
+			if (firstElement) {
+				cue.call(this, seq, 0, +1, pristine) // Start from the first element in forward direction
+				return animate.call(this, firstElement, { reveal: true, pristine })
 			}
 		}
 
